@@ -1,0 +1,23 @@
+import FirebaseStorage
+
+func uploadImage(imageData: Data, imageName: String) {
+    let storageRef = Storage.storage().reference().child("event_images/\(imageName)")
+    
+    storageRef.putData(imageData, metadata: nil) { metadata, error in
+        if let error = error {
+            print("Failed to upload image: \(error.localizedDescription)")
+            return
+        }
+        
+        storageRef.downloadURL { (url, error) in
+            if let error = error {
+                print("Error getting download URL: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let imageURL = url else { return }
+            // Store the image URL in your Firebase database or use as needed
+            print("Image URL: \(imageURL.absoluteString)")
+        }
+    }
+}
